@@ -1,8 +1,6 @@
 require("dotenv").config()
 const express = require("express")
-app.use(cors({
-  origin: "https://watch-list-pearl.vercel.app"
-}))
+const cors = require("cors")
 const bcrypt = require("bcrypt")
 const pool = require("./db")
 const jwt = require("jsonwebtoken")
@@ -10,7 +8,10 @@ const autenticar = require("./auth")
 
 const app = express()
 
-app.use(cors())
+app.use(cors({
+    origin: "https://watch-list-pearl.vercel.app"
+}))
+
 app.use(express.json())
 
 app.get("/", (req, res) => {
