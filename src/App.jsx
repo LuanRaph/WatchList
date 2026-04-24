@@ -18,7 +18,7 @@ function Cadastro() {
 
   async function handleCadastro() {
     try {
-      const res = await fetch("https://myproject.onrender.com/cadastro", {
+      const res = await fetch("watchlist-0t2t.onrender.com/cadastro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nome, email, senha })
@@ -67,7 +67,7 @@ function Login() {
 
   async function handleLogin() {
     try {
-      const res = await fetch("https://myproject.onrender.com/login", {
+      const res = await fetch("watchlist-0t2t.onrender.com/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, senha })
