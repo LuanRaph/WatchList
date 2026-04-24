@@ -1,7 +1,113 @@
 import { useState, useEffect, createContext, useContext } from "react"
-import { BrowserRouter, Routes, Route, useNavigate, useParams, Link } from "react-router-dom"
+import { BrowserRouter, Routes, Route, useNavigate, useParams, Link, Navigate } from "react-router-dom"
 
 const API_KEY = "332d9c67"
+
+
+function RotaProtegida({ children }) {
+  const token = localStorage.getItem("token")
+  if (!token) return <Navigate to="/login" />
+  return children
+}
+
+function Cadastro() {
+  const [nome, setNome] = useState("")
+  const [email, setEmail] = useState("")
+  const [senha, setSenha] = useState("")
+  const navigate = useNavigate()
+
+  async function handleCadastro() {
+    try {
+      const res = await fetch("http://localhost:3000/cadastro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome, email, senha })
+      })
+      const data = await res.json()
+      alert(data.mensagem)
+      navigate("/login")
+    } catch (err) {
+      alert("erro no cadastro")
+    }
+  }
+  return (
+    <div className="d-flex justify-content-center align-items-center text-light">
+      <div className="mt-5 w-25">
+        <div className="mb-4">
+          <h1 className="text-center">Criar conta</h1>
+        </div>
+        <div>
+          <label className="form-label">Nome</label>
+          <input className="form-control" value={nome} onChange={e => setNome(e.target.value)} placeholder="Digite seu nome" />
+        </div>
+        <div>
+          <label className="form-label">Email</label>
+          <input className="form-control" type="email" onChange={e => setEmail(e.target.value)} placeholder="Digite seu email" />
+        </div>
+        <div>
+          <label className="form-label">Senha</label>
+          <input className="form-control" type="password" onChange={e => setSenha(e.target.value)} placeholder="Digite sua senha" />
+        </div>
+        <div>
+          <button className="btn bg-danger bg-gradient bg-opacity-100 w-100 mt-5" onClick={handleCadastro}>Cadastrar</button>
+        </div>
+        <p>Já tem uma conta? <Link to="/login">Entrar</Link></p>
+      </div>
+    </div>
+  )
+
+}
+
+
+
+function Login() {
+  const navigate = useNavigate()
+  const [email, setEmail] = useState("")
+  const [senha, setSenha] = useState("")
+
+  async function handleLogin() {
+    try {
+      const res = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, senha })
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        alert(data.erro)
+        return
+      }
+      localStorage.setItem("token", data.token)
+      navigate("/")
+    } catch (err) {
+      alert("Erro no login")
+    }
+  }
+  return (
+    <div className="d-flex justify-content-center align-items-center text-light">
+      <div className="w-25">
+        <div className="w-0">
+          <h1 className="mb-5 mt-5 text-center">Acesse sua conta</h1> 
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Email</label>
+          <input className="form-control" value={email} onChange={e => setEmail(e.target.value)} placeholder="jonh@gmail.com" />
+        </div>
+        <div className="mb-1">
+          <label className="form-label">Senha</label>
+          <input className="form-control" value={senha} onChange={e => setSenha(e.target.value)} placeholder="Senha" type="password"/>
+        </div>
+        <div className="d-flex mt-5 justify-content-center align-items-center"> 
+          <button className="btn bg-danger bg-gradient bg-opacity-100 w-100" onClick={handleLogin}>Entrar</button>
+        </div>
+          <p className="mt-2">Não possui uma conta? <Link to="/cadastro">Cadastre-se</Link></p>
+      </div>
+    </div>
+  )
+}
+
+
+
 
 function Home() {
   const navigate = useNavigate()
@@ -27,6 +133,12 @@ function Home() {
   </div>
   )
   
+  function logout() {
+    localStorage.removeItem("token")
+    navigate("/login")
+  }
+
+
   return (
     <div>
       <nav className="navbar navbar-expand-sm navbar-dark bg-dark rounded-bottom-4 border-bottom border-danger border-3">
@@ -40,6 +152,18 @@ function Home() {
           <form className="d-flex" style={{ background: "None"}}>
             <input className="form-control navbar-text me-2 border-danger border-2 fw-lighter" type="text" value={busca} onChange={e => setBusca(e.target.value)} placeholder="Buscar filme..." />
           </form>
+          <div className="dropdown" style={{ background: "None" }}>
+            <i 
+              className="bi bi-person-circle fs-3 text-white dropdown-toggle" 
+              data-bs-toggle="dropdown" 
+              style={{ cursor: "pointer", background: "None" }}
+            ></i>
+            <ul className="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+              <li style={{ background: "None"}}><span className="dropdown-item text-light">Minha conta</span></li>
+              <li><hr className="dropdown-divider" /></li>
+              <li style={{ background: "None"}}><button className="dropdown-item text-danger" onClick={logout}>Sair</button></li>
+            </ul>
+          </div>
         </div>
       </nav>
       <div className="container col-9 mx-auto mt-5">
@@ -184,14 +308,25 @@ function Favoritos() {
 }
 
 
+
+
 function App() {
   return (
     <FavoritosProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/cadastro" element={<Cadastro />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={
+            <RotaProtegida>
+              <Home />
+            </RotaProtegida>} />
           <Route path="/filme/:id" element={<Detalhes />} />
-          <Route path="/favoritos" element={<Favoritos />} />
+          <Route path="/favoritos" element={
+            <RotaProtegida>
+              <Favoritos />
+            </RotaProtegida>
+            } />
         </Routes>
       </BrowserRouter>
     </FavoritosProvider>
