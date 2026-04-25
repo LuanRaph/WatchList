@@ -18,7 +18,7 @@ function Cadastro() {
 
   async function handleCadastro() {
     try {
-      const res = await fetch("watchlist-production-f3fb.up.railway.app/cadastro", {
+      const res = await fetch("https://watchlist-production-f3fb.up.railway.app/cadastro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nome, email, senha })
@@ -67,7 +67,7 @@ function Login() {
 
   async function handleLogin() {
     try {
-      const res = await fetch("watchlist-production-f3fb.up.railway.app/login", {
+      const res = await fetch("https://watchlist-production-f3fb.up.railway.app/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, senha })
