@@ -9,7 +9,7 @@ const autenticar = require("./auth")
 const app = express()
 
 app.use(cors({
-    origin: "https://watch-list-pearl.vercel.app"
+    origin: "https://watch-list-dusky-alpha.vercel.app"
 }))
 
 app.use(express.json())
