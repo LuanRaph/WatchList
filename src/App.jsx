@@ -86,7 +86,7 @@ function Login() {
   return (
     <div className="d-flex justify-content-center align-items-center text-light">
       <div className="w-25">
-        <div className="w-0">
+        <div>
           <h1 className="mb-5 mt-5 text-center">Acesse sua conta</h1> 
         </div>
         <div className="mb-3">
