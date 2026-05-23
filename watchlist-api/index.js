@@ -27,6 +27,7 @@ app.post("/cadastro", async (req, res) => {
         )
         res.json({ mensagem: "Usuario cadastro" })
     } catch (err) {
+        console.log(err);
         res.status(400).json({ erro: "Email ja cadastrado" })
     }
 })
